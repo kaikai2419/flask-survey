@@ -5,7 +5,6 @@ import os
 
 app = Flask(__name__)
 
-# MySQL 連線設定
 def get_connection():
     return mysql.connector.connect(
         host=os.environ.get("MYSQL_HOST"),
@@ -17,7 +16,7 @@ def get_connection():
 
 @app.route("/", methods=["GET"])
 def home():
-    return render_template("index.html")  # 顯示問卷頁面
+    return render_template("index.html")
 
 @app.route("/submit", methods=["POST"])
 def submit():
@@ -41,27 +40,24 @@ def submit():
         conn.commit()
         cursor.close()
         conn.close()
-        return jsonify({"status": "success", "message": "感謝你的填寫！"})
+        return render_template("thankyou.html")
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+# ✅ 管理員後台頁面
 @app.route("/admin", methods=["GET"])
-def view_feedbacks():
+def admin():
     try:
         conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT name, feedback, created_at FROM feedbacks ORDER BY created_at DESC")
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM feedbacks ORDER BY created_at DESC")
         data = cursor.fetchall()
         cursor.close()
         conn.close()
-
-        html = "<h2>所有填寫紀錄</h2><ul>"
-        for row in data:
-            html += f"<li><strong>{row[0]}</strong>：{row[1]} <em>({row[2]})</em></li>"
-        html += "</ul>"
-        return html
+        return render_template("admin.html", feedbacks=data)
     except Exception as e:
-        return f"❌ 錯誤：{str(e)}"
+        return f"資料讀取失敗：{e}", 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
