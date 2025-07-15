@@ -1,20 +1,20 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import mysql.connector
-from datetime import datetime
 import os
 
 app = Flask(__name__)
 
-# MySQL 連線設定（用 Render 環境變數）
+# 資料庫連線設定（使用 Render 的環境變數）
 def get_connection():
     return mysql.connector.connect(
-        host=os.environ.get("DB_HOST"),
-        user=os.environ.get("DB_USER"),
-        password=os.environ.get("DB_PASSWORD"),
-        database=os.environ.get("DB_NAME"),
-        port=int(os.environ.get("DB_PORT", 3306))
+        host=os.environ.get("MYSQL_HOST"),
+        user=os.environ.get("MYSQL_USER"),
+        password=os.environ.get("MYSQL_PASSWORD"),
+        database=os.environ.get("MYSQL_DATABASE"),
+        port=int(os.environ.get("MYSQL_PORT", 3306))
     )
 
+# 問卷送出 API
 @app.route("/submit", methods=["POST"])
 def submit():
     name = request.form.get("name")
@@ -41,9 +41,11 @@ def submit():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+# 問卷主頁
 @app.route("/", methods=["GET"])
 def home():
-    return "後端運作正常 / Backend is running."
+    return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
