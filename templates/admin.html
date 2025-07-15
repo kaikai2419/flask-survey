@@ -4,21 +4,38 @@
   <meta charset="UTF-8">
   <title>回饋紀錄</title>
   <style>
-    body { font-family: sans-serif; max-width: 800px; margin: auto; }
-    h2 { text-align: center; }
-    .feedback { border-bottom: 1px solid #ccc; padding: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .entry {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    .time {
+      color: #666;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
-  <h2>使用者回饋紀錄</h2>
-  {% for fb in feedbacks %}
-    <div class="feedback">
-      <strong>{{ fb.name }}</strong> 說：<br>
-      {{ fb.feedback }}<br>
-      <small>{{ fb.created_at }}</small>
-    </div>
+  <h1>使用者回饋紀錄</h1>
+  {% if feedbacks %}
+    {% for fb in feedbacks %}
+      <div class="entry">
+        <strong>{{ fb.name }}</strong>：
+        <p>{{ fb.feedback }}</p>
+        <div class="time">{{ fb.created_at }}</div>
+      </div>
+    {% endfor %}
   {% else %}
-    <p>目前尚無留言。</p>
-  {% endfor %}
+    <p style="text-align:center;">目前尚無留言。</p>
+  {% endif %}
 </body>
 </html>
