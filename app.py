@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify, render_template
 import mysql.connector
+from datetime import datetime
 import os
 
 app = Flask(__name__)
 
-# 資料庫連線設定（使用 Render 的環境變數）
+# MySQL 連線設定
 def get_connection():
     return mysql.connector.connect(
         host=os.environ.get("MYSQL_HOST"),
@@ -14,7 +15,10 @@ def get_connection():
         port=int(os.environ.get("MYSQL_PORT", 3306))
     )
 
-# 問卷送出 API
+@app.route("/", methods=["GET"])
+def home():
+    return render_template("index.html")  # 回傳 templates/index.html
+
 @app.route("/submit", methods=["POST"])
 def submit():
     name = request.form.get("name")
@@ -41,11 +45,5 @@ def submit():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-# 問卷主頁
-@app.route("/", methods=["GET"])
-def home():
-    return render_template("index.html")
-
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
