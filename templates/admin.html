@@ -1,26 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>管理者頁面</title>
+  <title>回饋紀錄</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: auto; }
+    h2 { text-align: center; }
+    .feedback { border-bottom: 1px solid #ccc; padding: 10px; }
+  </style>
 </head>
 <body>
-  <h1>使用者意見回饋</h1>
-  <table border="1">
-    <tr>
-      <th>ID</th>
-      <th>姓名</th>
-      <th>意見</th>
-      <th>時間</th>
-    </tr>
-    {% for item in feedbacks %}
-    <tr>
-      <td>{{ item.id }}</td>
-      <td>{{ item.name }}</td>
-      <td>{{ item.feedback }}</td>
-      <td>{{ item.created_at }}</td>
-    </tr>
-    {% endfor %}
-  </table>
+  <h2>使用者回饋紀錄</h2>
+  {% for fb in feedbacks %}
+    <div class="feedback">
+      <strong>{{ fb.name }}</strong> 說：<br>
+      {{ fb.feedback }}<br>
+      <small>{{ fb.created_at }}</small>
+    </div>
+  {% else %}
+    <p>目前尚無留言。</p>
+  {% endfor %}
 </body>
 </html>
