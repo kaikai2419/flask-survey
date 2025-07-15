@@ -4,16 +4,14 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-
 def get_connection():
     return mysql.connector.connect(
-        host=os.environ.get("MYSQL_HOST"),
-        user=os.environ.get("MYSQL_USER"),
-        password=os.environ.get("MYSQL_PASSWORD"),
-        database=os.environ.get("MYSQL_DATABASE"),
-        port=int(os.environ.get("MYSQL_PORT", 3306))
+        host="centerbeam.proxy.rlwy.net",
+        user="root",
+        password="HlqQFyubVDkDbnZBhqxjiqPtkGQiRVLJ",  # ← 這裡貼上 Railway 給你的密碼
+        database="railway",
+        port=15852
     )
-
 @app.route("/", methods=["GET"])
 def home():
     return render_template("index.html")
