@@ -17,7 +17,7 @@ def get_connection():
 
 @app.route("/", methods=["GET"])
 def home():
-    return render_template("index.html")  # 回傳 templates/index.html
+    return render_template("index.html")  # 顯示問卷頁面
 
 @app.route("/submit", methods=["POST"])
 def submit():
@@ -44,6 +44,24 @@ def submit():
         return jsonify({"status": "success", "message": "感謝你的填寫！"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/admin", methods=["GET"])
+def view_feedbacks():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT name, feedback, created_at FROM feedbacks ORDER BY created_at DESC")
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        html = "<h2>所有填寫紀錄</h2><ul>"
+        for row in data:
+            html += f"<li><strong>{row[0]}</strong>：{row[1]} <em>({row[2]})</em></li>"
+        html += "</ul>"
+        return html
+    except Exception as e:
+        return f"❌ 錯誤：{str(e)}"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
